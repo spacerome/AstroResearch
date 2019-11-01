@@ -254,6 +254,7 @@ def fileList(img):
     img = issorted(img) # Sort Image List
     for i in range(len(img)):
 
+        break # Will remove later
 
     return None #Will change later
 
@@ -275,6 +276,7 @@ def crm2crv():
     # Np Where cdata1 = 1 (Cray)
     # if np where = 1 then we input the cray value
     # extra condition: IF value is -1 then we multiply it by -1 
+
     return None
 
 ###############################################################################
@@ -351,6 +353,7 @@ def main():
     MIGHT MAKE THIS EASIER TO PREVENT FURTHER CONFUSION
     Use resultant name say
     fitsfile(listoffitsfiles)
+
     '''
     ###########################################################################
 
@@ -365,6 +368,9 @@ def main():
 
         # read in data, CRM
 
+        '''
+        call function that converts crm
+        '''
 
 
         # calculate initial XFRAC
