@@ -88,6 +88,17 @@ class FitsFileImages():
         if fext:    self.fext =     str(fext)
         if ftype:   self.ftype =    str(ftype)
 
+        def checkexist(self,fname):
+            ofile = ''
+
+            if self.fname.endswith('.fits'):
+                if os.path.exists(self.fname):
+                    ofile=self.fname
+                else:
+                    print()
+
+            return None
+
 
 ###############################################################################
 
@@ -514,15 +525,24 @@ def main():
 
         # define name for the output file
 
-
+        '''
+        use following class to output fitsfile to reduce excess data
+        loss using FitsFileImages() class for this process
+        '''
 
         # write the output image file
 
-
+        '''
+        use following class to output fitsfile to reduce excess data
+        loss using FitsFileImages() class for this process
+        '''
 
         # write the output CRM, TRU, ...
 
-
+        '''
+        use following class to output fitsfile to reduce excess data
+        loss using FitsFileImages() class for this process
+        '''
 
     #################################
 
