@@ -340,7 +340,7 @@ def shift_image(input,output,shift,border=0,bpmkey="BPM",bpmnew="",
     check_exist(output,'w',clobber)
 
     # Open the input image as pyfits object
-    fimg=pyfits.open(input)
+    fimg=fits.open(input)
     hdr=fimg[0].header
     D=fimg[0].data
     (iny,inx)=D.shape
