@@ -1,2 +1,2 @@
 # DLASTRO
-Simulation Script for DL ASTRO
+Scripts generated for Astronomy Reserach
