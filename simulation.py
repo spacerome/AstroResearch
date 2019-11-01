@@ -463,6 +463,14 @@ def main():
     infiles=args
     nfiles=len(infiles)
 
+    # read initial image input files and will gather crms
+
+    # store initial crvs within a list
+
+    '''
+    Using CRAY class to store data? Not sure if this is a good Idea as of yet
+    '''
+
     '''
     crv=crmfiles
     crm=crvfiles
@@ -546,7 +554,6 @@ def main():
 
     #################################
 
-    #return None
 
 ###############################################################################
 # This will be modified or removed
