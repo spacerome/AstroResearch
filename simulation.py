@@ -52,8 +52,6 @@ import random
 # lacext = '_lac'
 # crvext = '_crv'
 
-# sorts resultant list
-
 # Initial Global Variables
 
 globclob = yes
@@ -157,7 +155,7 @@ def fitsfile(file):
 # Modifying This May Combine Later
 ###############################################################################
 
-def check_exist(filename, status, clobber=globclob):
+def check_exist(filename, status, clobber = globclob):
 
     """
 
@@ -271,9 +269,11 @@ def fileList(img):
 
 ###############################################################################
 
-def rando(fitsIm,noutput):
+def randomImage(noutput):
 
-    return None
+    choice = random.randrange(noutput)
+
+    return choice
 
 ###############################################################################
 
@@ -462,6 +462,7 @@ def main():
 
     infiles=args
     nfiles=len(infiles)
+
     '''
     crv=crmfiles
     crm=crvfiles
@@ -476,10 +477,9 @@ def main():
 
         # pick base image
 
-        '''
-        rando(image,noutput) # Chooses a random image within the given number
-                             # of outputs
-        '''
+        n = randomImage(nfiles) # calls function to generate random value
+        imageName = fitsImage[n] # Chooses name of fits Image
+
 
         # read in data, CRM
 
