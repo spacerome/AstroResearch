@@ -119,7 +119,8 @@ class CosmicRayImages():
 
 
 ###############################################################################
-# Modifying This 
+# Modifying This May Combine Later 
+###############################################################################
 
 def fitsfile(file):
     outfile=""
@@ -142,7 +143,9 @@ def fitsfile(file):
     return outfile
 
 ###############################################################################
-# Modifying This
+# Modifying This May Combine Later 
+###############################################################################
+
 def check_exist(filename, status, clobber=globclob):
 
     """ 
@@ -188,7 +191,7 @@ def issorted(ims):
 def iraffiles(files,nfiles=0):
 
     if type(files) is not StringType:
-        print "Input filelist is not a string"
+        print("Input filelist is not a string")
         exit(1)
 
     fout=[]
@@ -342,7 +345,13 @@ def main():
 
     infiles=args
     nfiles=len(infiles)
-
+    '''
+    crv=crmfiles
+    crm=crvfiles 
+    MIGHT MAKE THIS EASIER TO PREVENT FURTHER CONFUSION
+    Use resultant name say
+    fitsfile(listoffitsfiles)
+    '''
     ###########################################################################
 
     for i in range(noutput):
@@ -352,9 +361,6 @@ def main():
         ''' 
         rando(image,noutput) # Chooses a random image within the given number 
                              # of outputs
-
-
-
         '''
 
         # read in data, CRM
