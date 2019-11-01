@@ -233,7 +233,7 @@ def openfits(fitsIm):
     try: 
         check_exist(fitsIm)
     except:
-
+        pass
     fitsIm = fits.open(fitsName)
 
     return fitsIm
