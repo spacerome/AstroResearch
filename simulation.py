@@ -165,6 +165,7 @@ class CosmicRayImages():
 ###############################################################################
 
 def fitsfile(file):
+
     outfile =   ""
 
     if file.endswith('.fits') or file.endswith('.imh'):
@@ -193,13 +194,11 @@ def fitsfile(file):
 def check_exist(filename, status, clobber = globclob):
 
     """
-
     check_exist(filename, status, clobber=yes)
     checks to see if filename exists
     if status==r, must exist, otherwise prints error + returns False
     if status==w, if exists and clobber=no then prints error + returns False
     else deletes + returns True
-
     """
 
     if (status == "r"):
@@ -235,6 +234,7 @@ def issorted(ims):
 # Will be modified Just a Place Holder
 #
 ###############################################################################
+
 def iraffiles(files, nfiles = 0):
 
     if type(files) is not StringType:
@@ -277,10 +277,12 @@ def openfits(fitsIm):
 
     # Open Given Fits File Assuming the calling function is calling the name
     # from list
+
     try:
         check_exist(fitsIm)
     except:
         pass # Will Change Later
+
     fitsIm = fits.open(fitsName)
 
     return fitsIm
@@ -333,10 +335,10 @@ def crm2crv():
 ###############################################################################
 
 def crmv():
-    #####
+
     # Master loop to check number of outputs reached and then
     # Pick random seed image
-    ####
+
     return None
 
 ###############################################################################
@@ -450,10 +452,12 @@ def usage():
 # Updated Version of Function from iqutils
 #
 ###############################################################################
+
 def shiftImage(input, output, shift, border = 0, crmkey = "CRM", crmnew = "",
                skysec = "SKYSEC", clobber = globclob, verbose = globver):
 
     '''
+
         shifts input image.  WCS is preserved.
 
         input   name of input image
@@ -465,6 +469,7 @@ def shiftImage(input, output, shift, border = 0, crmkey = "CRM", crmnew = "",
 
         clobber clobber output files [yes]
         verbose print messages about actions [yes]
+
     '''
 
     # Input checking
@@ -524,15 +529,24 @@ def shiftImage(input, output, shift, border = 0, crmkey = "CRM", crmnew = "",
 
 ###############################################################################
 #
-# WILL CHANGE LATER
+# WILL CHANGE LATER AND USE ASTOPY
 #
 ###############################################################################
+
 def rotate():
 
     return None
+
+###############################################################################
+#
+# Main script
+#
+###############################################################################
+
 def main():
 
     # Parse Command line
+
     try:
         opts, args = getopt.getopt(sys.argv[1:],
                      "hdb:n:f:",
@@ -542,16 +556,19 @@ def main():
         sys.exit(2)
 
     # Defaults
-    debug = 0
-    noutput = 1
-    block = 64
-    crfrac = 0.10
+
+    debug   =   0
+    noutput =   1
+    block   =   64
+    crfrac  =   0.10
 
     # Process details (sometimes useful)
-    (xdir,xname) = os.path.split(sys.argv[0])
-    pid = os.getpid()
+
+    (xdir,xname)    = os.path.split(sys.argv[0])
+    pid             = os.getpid()
 
     # Options parsing
+
     for opt, val in opts:
         # Usage info only
         if opt in ("-h", "--help"):
@@ -587,10 +604,13 @@ def main():
     # store initial crvs within a list
 
     '''
+
     Using CRAY class to store data? Not sure if this is a good Idea as of yet
+
     '''
 
     '''
+
     crv=crmfiles
     crm=crvfiles
     MIGHT MAKE THIS EASIER TO PREVENT FURTHER CONFUSION
@@ -611,7 +631,9 @@ def main():
         # read in data, CRM
 
         '''
+
         call function that converts crm
+
         '''
 
 
@@ -653,22 +675,28 @@ def main():
         # define name for the output file
 
         '''
+
         use following class to output fitsfile to reduce excess data
         loss using FitsFileImages() class for this process
+
         '''
 
         # write the output image file
 
         '''
+
         use following class to output fitsfile to reduce excess data
         loss using FitsFileImages() class for this process
+
         '''
 
         # write the output CRM, TRU, ...
 
         '''
+
         use following class to output fitsfile to reduce excess data
         loss using FitsFileImages() class for this process
+
         '''
 
     #################################
