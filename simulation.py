@@ -58,9 +58,31 @@ globclob = yes
 globver = yes
 
 ###############################################################################
+#
+# Dictionary of Keywords
+#
+###############################################################################
 
+keywords = {
+
+    'observe'   :   'obs',
+    'crmask'    :   'crm',
+    'lacosmic'  :   'lac',
+    'crayval'   :   'crv',
+    'maxpix'    :   65565,
+    'blocksize' :   64,
+    'obsext'    :   '_obs',
+    'truext'    :   '_tru',
+    'crmext'    :   '_crm',
+    'lacext'    :   '_lac',
+    'crvext'    :   '_crv'
+
+}
+
+###############################################################################
+#
 # Planned Class for ALL Fits Types WIP
-
+#
 ###############################################################################
 
 class FitsFileImages():
@@ -93,15 +115,15 @@ class FitsFileImages():
                 if os.path.exists(self.fname):
                     ofile=self.fname
                 else:
-                    print()
+                    print(f"Can't find requested file '{fname}'.")
 
             return None
 
 
 ###############################################################################
-
+#
 # Class for cosmic ray images WIP
-
+#
 ###############################################################################
 
 class CosmicRayImages():
@@ -128,7 +150,9 @@ class CosmicRayImages():
 
 
 ###############################################################################
+#
 # Modifying This May Combine Later
+#
 ###############################################################################
 
 def fitsfile(file):
@@ -138,7 +162,7 @@ def fitsfile(file):
         if os.path.exists(file):
             outfile=file
         else:
-            print("Can't find requested file '%s'" % file)
+            print(f"Can't find requested file {file}")
     else:
         if os.path.exists(file+'.fits'):
             outfile=file+'.fits'
@@ -147,12 +171,14 @@ def fitsfile(file):
         elif os.path.exists(file+'.imh'):
             outfile=file+'.imh'
         else:
-            print("Can't find requested file '%s' or variants" % file)
+            print(f"Can't find requested file {file} or variants.")
 
     return outfile
 
 ###############################################################################
+#
 # Modifying This May Combine Later
+#
 ###############################################################################
 
 def check_exist(filename, status, clobber = globclob):
@@ -171,7 +197,7 @@ def check_exist(filename, status, clobber = globclob):
         # check to see if it exists for reading
         # (i.e. must be present)
         if (not (os.path.exists(filename))):
-            print("Couldn't open input file: %s" % filename)
+            print(f"Couldn't open input file: {filename}.")
             return False
     else:
         # check to see if it exists for writing
@@ -180,7 +206,7 @@ def check_exist(filename, status, clobber = globclob):
             if (clobber):
                 os.remove(filename)
             else:
-                print("File %s already exists and clobber=no" % filename)
+                print(f"File {filename} already exists and clobber=no")
                 return False
 
     return True
@@ -196,7 +222,10 @@ def issorted(ims):
     return fit
 
 ###############################################################################
+#
 # Will be modified Just a Place Holder
+#
+###############################################################################
 def iraffiles(files,nfiles=0):
 
     if type(files) is not StringType:
@@ -277,11 +306,13 @@ def randomImage(noutput):
 
 ###############################################################################
 
-def crm2crv():
-
-####
+###############################################################################
+#
 # crm to crv
-####
+#
+###############################################################################
+
+def crm2crv():
 
     # RAW - SKY (Gets Cray Values)
     # Np Where cdata1 = 1 (Cray)
@@ -407,7 +438,9 @@ def usage():
 #     fimg.writeto(output)
 
 ###############################################################################
+#
 # Updated Version of Function from iqutils
+#
 ###############################################################################
 def shiftImage(input,output,shift,border=0,crmkey="CRM",crmnew="",
                skysec="SKYSEC",clobber=globclob,verbose=globver):
@@ -429,7 +462,7 @@ def shiftImage(input,output,shift,border=0,crmkey="CRM",crmnew="",
     # Input checking
 
     if not os.path.exists(input) and not os.path.exists(input+".fits"):
-        print("Unable to open input image %s" % input)
+        print(f"Unable to open input image {input}.")
         return None
     elif os.path.exists(input+".fits"):
         input+=".fits"
@@ -474,15 +507,17 @@ def shiftImage(input,output,shift,border=0,crmkey="CRM",crmnew="",
 
     fimg[0].data = DX
 
-    hdr.update('SHIFTED','Shifted from %s' % input)
+    hdr.update("SHIFTED",f"Shifted from {input}")
 
     # Correct WCS (CRPIX) settings
 
-    
+
     return None
 
 ###############################################################################
+#
 # WILL CHANGE LATER
+#
 ###############################################################################
 def rotate():
 
@@ -527,7 +562,8 @@ def main():
         elif opt in ("-f", "--crfrac"):
             crfrac=val
         else:
-            sys.stderr.write("Unmatched option %s\n" % opt)
+            # sys.stderr.write("Unmatched option %s\n" % opt)
+            sys.stderr.write(f"Unmatched option {opt}\n")
 
     # Arguments are same-size input files to use in construction
 
@@ -631,7 +667,10 @@ def main():
 
 
 ###############################################################################
+#
 # This will be modified or removed
+#
+###############################################################################
 def usage():
 
     (xdir,xname)=os.path.split(sys.argv[0])
