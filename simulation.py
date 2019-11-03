@@ -312,10 +312,108 @@ def usage():
 #
 ###############################################################################
 
-def shift_image(input,output,shift,border=0,bpmkey="BPM",bpmnew="",
-                skysec="SKYSEC",clobber=globclob,verbose=globver):
+# def shift_image(input,output,shift,border=0,bpmkey="BPM",bpmnew="",
+#                 skysec="SKYSEC",clobber=globclob,verbose=globver):
+#
+#     """ shifts input image.  WCS is preserved.
+#
+#         input   name of input image
+#         output  name of output image
+#         shift   the shift:  [dx,dy] in pixels
+#         border  value to set in border regions [0]
+#         bpmkey  bad pixel mask header keyword [BPM]
+#         bpmnew  new bad pixel mask for shifted image [none]
+#
+#         clobber clobber output files [yes]
+#         verbose print messages about actions [yes]
+#     """
+#
+#     # Input checking
+#     if not os.path.exists(input) and not os.path.exists(input+".fits"):
+#         print "Couldn't open input image %s" % input
+#         return
+#     elif os.path.exists(input+".fits"):
+#         input+=".fits"
+#     if input==output:
+#         print "Can't shift to same filename, sorry"
+#         return
+#     check_exist(output,'w',clobber)
+#
+#     # Open the input image as pyfits object
+#     fimg=fits.open(input)
+#     hdr=fimg[0].header
+#     D=fimg[0].data
+#     (iny,inx)=D.shape
+#
+#     # The shift
+#     dx,dy=int(shift[0]),int(shift[1])
+#     szx,szy=inx-abs(dx),iny-abs(dy)
+#
+#     # Coordinate ranges for zero/positive shifts
+#     x0,y0=0,0
+#     newx0,newy0=dx,dy
+#
+#     # Change for negative shifts
+#     if dx<0:
+#         x0=-dx
+#         newx0=0
+#     if dy<0:
+#         y0=-dy
+#         newy0=0
+#
+#     # Make the output data as a numarray
+#     DX=0*D+border
+#
+#     # Insert data from the input image
+#     DX[newy0:newy0+szy,newx0:newx0+szx]=D[y0:y0+szy,x0:x0+szx]
+#
+#     fimg[0].data=DX
+#     hdr.update('SHIFTED','Shifted from %s' % input)
+#
+#     # Correct the WCS (CRPIX) settings
+#     if 'CRPIX1' in hdr.keys():
+#         crpix1=hdr['CRPIX1']
+#         hdr.update('CRPIX1',crpix1+dx)
+#     if 'CRPIX2' in hdr.keys():
+#         crpix2=hdr['CRPIX2']
+#         hdr.update('CRPIX2',crpix2+dy)
+#
+#     # Reset the BPM keyword if requested
+#     if len(bpmkey)>0:
+#         if len(bpmnew)>0:
+#             hdr.update(bpmkey,bpmnew)
+#         else:
+#             del hdr['BPM']
+#
+#     # Set or adjust the SKYSEC keyword, as appropriate
+#     if len(skysec)>0:
+#         # Default sky region = Full original image (IRAF style)
+#         skyreg="[%d:%d,%d:%d]" % (newx0+1,newx0+szx,newy0+1,newy0+szy)
+#         # Check if there was a sky region defined already
+#         if check_head(input,skysec):
+#             skyval=get_head(input,skysec)
+#             resky=re.search("\[(\d+):(\d+),(\d+):(\d+)\]",skyval)
+#             if resky:
+#                 oldx0,oldx1,oldy0,oldy1=int(resky.group(1)), \
+#                                         int(resky.group(2)), \
+#                                         int(resky.group(3)), \
+#                                         int(resky.group(4))
+#                 skyreg="[%d:%d,%d:%d]" % \
+#                         (oldx0+dx,oldx1+dx,
+#                          oldy0+dy,oldy1+dy)
+#         hdr.update(skysec,skyreg)
+#
+#     # Write/close the output image
+#     fimg.writeto(output)
 
-    """ shifts input image.  WCS is preserved.
+###############################################################################
+# Updated Version of Function from iqutils
+###############################################################################
+def shiftImage(input,output,shift,border=0,crmkey="CRM",crmnew="",
+               skysec="SKYSEC",clobber=globclob,verbose=globver):
+
+    '''
+        shifts input image.  WCS is preserved.
 
         input   name of input image
         output  name of output image
@@ -326,34 +424,39 @@ def shift_image(input,output,shift,border=0,bpmkey="BPM",bpmnew="",
 
         clobber clobber output files [yes]
         verbose print messages about actions [yes]
-    """
+    '''
 
     # Input checking
+
     if not os.path.exists(input) and not os.path.exists(input+".fits"):
-        print "Couldn't open input image %s" % input
-        return
+        print("Unable to open input image %s" % input)
+        return None
     elif os.path.exists(input+".fits"):
         input+=".fits"
-    if input==output:
-        print "Can't shift to same filename, sorry"
-        return
+    if input == output:
+        print("Unable to shift to same filename.")
+        return None
     check_exist(output,'w',clobber)
 
-    # Open the input image as pyfits object
-    fimg=fits.open(input)
-    hdr=fimg[0].header
-    D=fimg[0].data
-    (iny,inx)=D.shape
+    # Open the input image as objects
 
-    # The shift
-    dx,dy=int(shift[0]),int(shift[1])
+    fimg = fits.open(input)
+    hdr = fimg[0].header
+    d = fimg[0].data
+    (iny,inx)= D.shape
+
+    # SHIFT
+
+    dx,dy = int(shift[0]),int(shift[1])
     szx,szy=inx-abs(dx),iny-abs(dy)
 
     # Coordinate ranges for zero/positive shifts
-    x0,y0=0,0
-    newx0,newy0=dx,dy
+
+    x0,y0 = 0,0
+    newx0,newy0 = dx,dy
 
     # Change for negative shifts
+
     if dx<0:
         x0=-dx
         newx0=0
@@ -361,50 +464,22 @@ def shift_image(input,output,shift,border=0,bpmkey="BPM",bpmnew="",
         y0=-dy
         newy0=0
 
-    # Make the output data as a numarray
-    DX=0*D+border
+    # Make the output data as Numarray
 
-    # Insert data from the input image
+    DX = 0*D+border
+
+    # Insert Data from input image
+
     DX[newy0:newy0+szy,newx0:newx0+szx]=D[y0:y0+szy,x0:x0+szx]
 
-    fimg[0].data=DX
+    fimg[0].data = DX
+
     hdr.update('SHIFTED','Shifted from %s' % input)
 
-    # Correct the WCS (CRPIX) settings
-    if 'CRPIX1' in hdr.keys():
-        crpix1=hdr['CRPIX1']
-        hdr.update('CRPIX1',crpix1+dx)
-    if 'CRPIX2' in hdr.keys():
-        crpix2=hdr['CRPIX2']
-        hdr.update('CRPIX2',crpix2+dy)
+    # Correct WCS (CRPIX) settings
 
-    # Reset the BPM keyword if requested
-    if len(bpmkey)>0:
-        if len(bpmnew)>0:
-            hdr.update(bpmkey,bpmnew)
-        else:
-            del hdr['BPM']
-
-    # Set or adjust the SKYSEC keyword, as appropriate
-    if len(skysec)>0:
-        # Default sky region = Full original image (IRAF style)
-        skyreg="[%d:%d,%d:%d]" % (newx0+1,newx0+szx,newy0+1,newy0+szy)
-        # Check if there was a sky region defined already
-        if check_head(input,skysec):
-            skyval=get_head(input,skysec)
-            resky=re.search("\[(\d+):(\d+),(\d+):(\d+)\]",skyval)
-            if resky:
-                oldx0,oldx1,oldy0,oldy1=int(resky.group(1)), \
-                                        int(resky.group(2)), \
-                                        int(resky.group(3)), \
-                                        int(resky.group(4))
-                skyreg="[%d:%d,%d:%d]" % \
-                        (oldx0+dx,oldx1+dx,
-                         oldy0+dy,oldy1+dy)
-        hdr.update(skysec,skyreg)
-
-    # Write/close the output image
-    fimg.writeto(output)
+    
+    return None
 
 ###############################################################################
 # WILL CHANGE LATER
