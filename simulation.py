@@ -11,9 +11,7 @@ from astropy.stats import sigma_clipped_stats
 from types import *
 import copy as copypkg
 import os, shutil, glob, sys, string, re, math, operator, random
-import glob
-import argparse
-import random
+import glob, argparse, random
 
 #####
 #Gather List of Files
@@ -54,8 +52,8 @@ import random
 
 # Initial Global Variables
 
-globclob = yes
-globver = yes
+globclob    =   yes
+globver     =   yes
 
 ###############################################################################
 #
@@ -87,37 +85,48 @@ keywords = {
 
 class FitsFileImages():
 
-    def __init__(self, fname = None, fext = None, ftype = None, mpix= 65565,
+    def __init__(self, fname = None, fext = None, ftype = None, mpix = 65565,
                  bsize = 64, cfrac = 0.10):
 
         # Initial Null Properties
 
-        self.fname = None
-        self.fext =  None
-        self.ftype = None
+        self.fname  =   None
+        self.fext   =   None
+        self.ftype  =   None
 
         # Non-null Properties
 
-        self.mpix =     int(mpix)
-        self.bsize =    int(bsize)
-        self.cfrac =    float(cfrac)
+        self.mpix   =   int(mpix)
+        self.bsize  =   int(bsize)
+        self.cfrac  =   float(cfrac)
 
         # Reset Properties
 
-        if fname:   self.fname =    str(fname)
-        if fext:    self.fext =     str(fext)
-        if ftype:   self.ftype =    str(ftype)
+        if fname:   self.fname  =   str(fname)
+        if fext:    self.fext   =   str(fext)
+        if ftype:   self.ftype  =   str(ftype)
 
-        def checkexist(self,fname):
+        # Checks the fits images if they exist
+
+        def checkfits(self,fname):
             ofile = ''
 
             if self.fname.endswith('.fits'):
                 if os.path.exists(self.fname):
-                    ofile=self.fname
+                    ofile = self.fname
                 else:
                     print(f"Can't find requested file '{fname}'.")
+            else:
+                if os.path.exits(fname + '.fits'):
+                    ofile = fname
+                elif os.path.exists(fname):
+                    ofile = fname
+                elif os.path.exists(fname + '.imh'):
+                    ofile = fname + '.imh'
+                else:
+                    print(f"Can't find requested file {fname} or variants")
 
-            return None
+            return ofile
 
 
 ###############################################################################
@@ -128,25 +137,25 @@ class FitsFileImages():
 
 class CosmicRayImages():
 
-    def __init__(self, fname = None, fext = None, ftype = None, mpix= 65565,
+    def __init__(self, fname = None, fext = None, ftype = None, mpix = 65565,
                  bsize = 64):
 
         # Initial Null Properties
 
-        self.fname = None
-        self.fext =  None
-        self.ftype = None
+        self.fname  =   None
+        self.fext   =   None
+        self.ftype  =   None
 
         # Non-null Properties
 
-        self.mpix =     int(mpix)
-        self.bsize =    int(bsize)
+        self.mpix   =   int(mpix)
+        self.bsize  =   int(bsize)
 
         # Reset Properties
 
-        if fname:   self.fname =    str(fname)
-        if fext:    self.fext =     str(fext)
-        if ftype:   self.ftype =    str(ftype)
+        if fname:   self.fname  =   str(fname)
+        if fext:    self.fext   =   str(fext)
+        if ftype:   self.ftype  =   str(ftype)
 
 
 ###############################################################################
@@ -156,20 +165,20 @@ class CosmicRayImages():
 ###############################################################################
 
 def fitsfile(file):
-    outfile=""
+    outfile =   ""
 
     if file.endswith('.fits') or file.endswith('.imh'):
         if os.path.exists(file):
-            outfile=file
+            outfile =   file
         else:
             print(f"Can't find requested file {file}")
     else:
-        if os.path.exists(file+'.fits'):
-            outfile=file+'.fits'
+        if os.path.exists(file + '.fits'):
+            outfile =   file + '.fits'
         elif os.path.exists(file):
-            outfile=file
-        elif os.path.exists(file+'.imh'):
-            outfile=file+'.imh'
+            outfile =   file
+        elif os.path.exists(file + '.imh'):
+            outfile =   file + '.imh'
         else:
             print(f"Can't find requested file {file} or variants.")
 
@@ -206,7 +215,7 @@ def check_exist(filename, status, clobber = globclob):
             if (clobber):
                 os.remove(filename)
             else:
-                print(f"File {filename} already exists and clobber=no")
+                print(f"File {filename} already exists and clobber = no")
                 return False
 
     return True
@@ -226,17 +235,17 @@ def issorted(ims):
 # Will be modified Just a Place Holder
 #
 ###############################################################################
-def iraffiles(files,nfiles=0):
+def iraffiles(files, nfiles = 0):
 
     if type(files) is not StringType:
         print("Input filelist is not a string")
         exit(1)
 
-    fout=[]
-    fmult=files.split(",")
+    fout    =   []
+    fmult   =   files.split(",")
     for fcand in fmult:
-        re1=re.search("^(.+//)?@(.+)(//.+)?$",fcand)
-        re2=re.search("[\*\?]",fcand)
+        re1 = re.search("^(.+//)?@(.+)(//.+)?$",fcand)
+        re2 = re.search("[\*\?]",fcand)
         if re1:
             # Using the IRAF "@file.lis" convention
             flist=re1.group(2)
@@ -333,9 +342,8 @@ def crmv():
 ###############################################################################
 
 def usage():
-    (xdir,xname)=os.path.split(sys.argv[0])
-    print("Usage: %s [-h] [-b blocksize] [-n noutput] [-f crfrac]\n" % \
-          xname)
+    (xdir,xname) = os.path.split(sys.argv[0])
+    print(f"Usage: {xname} [-h] [-b blocksize] [-n noutput] [-f crfrac]\n")
 
 ###############################################################################
 #
@@ -442,8 +450,8 @@ def usage():
 # Updated Version of Function from iqutils
 #
 ###############################################################################
-def shiftImage(input,output,shift,border=0,crmkey="CRM",crmnew="",
-               skysec="SKYSEC",clobber=globclob,verbose=globver):
+def shiftImage(input, output, shift, border = 0, crmkey = "CRM", crmnew = "",
+               skysec = "SKYSEC", clobber = globclob, verbose = globver):
 
     '''
         shifts input image.  WCS is preserved.
@@ -461,53 +469,53 @@ def shiftImage(input,output,shift,border=0,crmkey="CRM",crmnew="",
 
     # Input checking
 
-    if not os.path.exists(input) and not os.path.exists(input+".fits"):
+    if not os.path.exists(input) and not os.path.exists(input + ".fits"):
         print(f"Unable to open input image {input}.")
         return None
-    elif os.path.exists(input+".fits"):
-        input+=".fits"
+    elif os.path.exists(input + ".fits"):
+        input += ".fits"
     if input == output:
         print("Unable to shift to same filename.")
         return None
-    check_exist(output,'w',clobber)
+    check_exist(output, 'w', clobber)
 
     # Open the input image as objects
 
-    fimg = fits.open(input)
-    hdr = fimg[0].header
-    d = fimg[0].data
-    (iny,inx)= D.shape
+    fimg        =   fits.open(input)
+    hdr         =   fimg[0].header
+    d           =   fimg[0].data
+    (iny,inx)   =   D.shape
 
     # SHIFT
 
-    dx,dy = int(shift[0]),int(shift[1])
-    szx,szy=inx-abs(dx),iny-abs(dy)
+    dx,dy       =   int(shift[0]), int(shift[1])
+    szx,szy     =   inx - abs(dx), iny - abs(dy)
 
     # Coordinate ranges for zero/positive shifts
 
-    x0,y0 = 0,0
-    newx0,newy0 = dx,dy
+    x0,y0       =   0, 0
+    newx0,newy0 =   dx, dy
 
     # Change for negative shifts
 
-    if dx<0:
-        x0=-dx
-        newx0=0
-    if dy<0:
-        y0=-dy
-        newy0=0
+    if dx < 0:
+        x0 =- dx
+        newx0 = 0
+    if dy < 0:
+        y0 =- dy
+        newy0 = 0
 
     # Make the output data as Numarray
 
-    DX = 0*D+border
+    DX = 0 * D + border
 
     # Insert Data from input image
 
-    DX[newy0:newy0+szy,newx0:newx0+szx]=D[y0:y0+szy,x0:x0+szx]
+    DX[newy0:newy0 + szy, newx0:newx0 + szx] = D[y0:y0 + szy, x0:x0 + szx]
 
     fimg[0].data = DX
 
-    hdr.update("SHIFTED",f"Shifted from {input}")
+    hdr.update("SHIFTED", f"Shifted from {input}")
 
     # Correct WCS (CRPIX) settings
 
@@ -528,7 +536,7 @@ def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:],
                      "hdb:n:f:",
-                    ["help","debug","block=","nout=","crfrac="])
+                    ["help", "debug", "block = ", "nout = ", "crfrac = "])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -540,8 +548,8 @@ def main():
     crfrac = 0.10
 
     # Process details (sometimes useful)
-    (xdir,xname)=os.path.split(sys.argv[0])
-    pid=os.getpid()
+    (xdir,xname) = os.path.split(sys.argv[0])
+    pid = os.getpid()
 
     # Options parsing
     for opt, val in opts:
@@ -551,16 +559,16 @@ def main():
             sys.exit(1)
         # Debug mode
         elif opt in ("-d", "--debug"):
-            debug=1
+            debug = 1
         # Blocksize (in pixels)
         elif opt in ("-b","--block"):
-            block=val
+            block = val
         # Number of output files
         elif opt in ("-n", "--nout"):
-            noutput=val
+            noutput = val
         # Target CR fraction
         elif opt in ("-f", "--crfrac"):
-            crfrac=val
+            crfrac = val
         else:
             # sys.stderr.write("Unmatched option %s\n" % opt)
             sys.stderr.write(f"Unmatched option {opt}\n")
@@ -571,8 +579,8 @@ def main():
         usage()
         sys.exit(2)
 
-    infiles=args
-    nfiles=len(infiles)
+    infiles =   args
+    nfiles  =   len(infiles)
 
     # read initial image input files and will gather crms
 
