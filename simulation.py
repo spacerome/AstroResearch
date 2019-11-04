@@ -52,8 +52,8 @@ import glob, argparse, random
 
 # Initial Global Variables
 
-globclob    =   yes
-globver     =   yes
+# globclob    =   yes
+# globver     =   yes
 
 ###############################################################################
 #
@@ -83,7 +83,7 @@ keywords = {
 #
 ###############################################################################
 
-class FitsFileImages():
+class FitsFile():
 
     def __init__(self, fname = None, fext = None, ftype = None, mpix = 65565,
                  bsize = 64, cfrac = 0.10):
@@ -135,7 +135,7 @@ class FitsFileImages():
 #
 ###############################################################################
 
-class CosmicRayImages():
+class CosmicRay():
 
     def __init__(self, fname = None, fext = None, ftype = None, mpix = 65565,
                  bsize = 64):
@@ -270,6 +270,26 @@ def iraffiles(files, nfiles = 0):
                 fout.append(fitsfile(fcand))
 
     return fout
+
+###############################################################################
+#
+# IRAFFILES 2.0
+#
+###############################################################################
+
+def sortfiles(files,nfiles=0):
+
+    #Try Except for this part
+
+    fout    =   []
+    fmult   =   files.split(",")
+
+    for fcand in fmult:
+        re1 = re.search("^(.+//)?@(,+)(//.+)?$",fcand)
+        re2 = re.search("[\*\?]",fcand)
+
+
+    return None
 
 ###############################################################################
 
