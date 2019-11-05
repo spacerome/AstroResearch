@@ -93,6 +93,8 @@ class FitsFile():
         self.fname  =   None
         self.fext   =   None
         self.ftype  =   None
+        self.ofile  =   None
+        self.status =   None
 
         # Non-null Properties
 
@@ -106,28 +108,56 @@ class FitsFile():
         if fext:    self.fext   =   str(fext)
         if ftype:   self.ftype  =   str(ftype)
 
-        # Checks the fits images if they exist
+    # Checks the fits images if they exist
 
-        def checkfits(self,fname):
-            ofile = ''
+    def checkfits(self,fname):
+        self.ofile = ''
 
-            if self.fname.endswith('.fits'):
-                if os.path.exists(self.fname):
-                    ofile = self.fname
-                else:
-                    print(f"Can't find requested file '{fname}'.")
+        if self.fname.endswith('.fits'):
+            if os.path.exists(self.fname):
+                self.ofile = self.fname
             else:
-                if os.path.exits(fname + '.fits'):
-                    ofile = fname
-                elif os.path.exists(fname):
-                    ofile = fname
-                elif os.path.exists(fname + '.imh'):
-                    ofile = fname + '.imh'
-                else:
-                    print(f"Can't find requested file {fname} or variants")
+                print(f"Can't find requested file '{self.fname}'.")
+        else:
+            if os.path.exists(self.fname + '.fits'):
+                self.ofile = self.fname
+            elif os.path.exists(self.fname):
+                self.ofile = self.fname
+            elif os.path.exists(self.fname + '.imh'):
+                self.ofile = self.fname + '.imh'
+            else:
+                print(f"Can't find requested file {self.fname} or variants")
 
-            return ofile
+        return self.ofile
 
+    # Check if the file exists (Should work Otherwise Outta here)
+
+    def checkExist(self,fname,status):
+
+        """
+        Work in progress checkExist(self,filename,status)
+        checks to see if the given filename exists or not.
+        if status == r, must exist, otherwise it will print an error and return
+        False.
+        if status == w, if it exists then it prints an error and returns False
+        otherwise it deletes and returns True.
+        """
+
+        if (self.status == "r"):
+            # Checks to see if it exists for reading
+            # Which means it must  be present
+
+            if (not (os.path.exists(self.fname))):
+                print(f"Couldn't open input file: {self.fname}")
+                return False
+        else:
+            # Check to see if exists for reading
+            # (i.e. must not exist)
+            if (os.path.exists(self.fname)):
+                print(f"File {self.fname} already exists.")
+                return False
+
+        return True
 
 ###############################################################################
 #
@@ -142,9 +172,10 @@ class CosmicRay():
 
         # Initial Null Properties
 
-        self.fname  =   None
-        self.fext   =   None
-        self.ftype  =   None
+        self.fname      =   None
+        self.fext       =   None
+        self.ftype      =   None
+        self.crmfile    =   None
 
         # Non-null Properties
 
@@ -157,6 +188,56 @@ class CosmicRay():
         if fext:    self.fext   =   str(fext)
         if ftype:   self.ftype  =   str(ftype)
 
+    # Check if fitsfile is validated
+
+    def checkcrm(self,fname):
+        crmfile = ''
+
+        if self.fname.endswith('.fits'):
+            if os.path.exists(self.fname):
+                self.crmfile = self.fname
+            else:
+                print(f"Can't find requested file '{self.fname}'.")
+        else:
+            if os.path.exists(self.fname + '.fits'):
+                self.crmfile = self.fname
+            elif os.path.exists(self.fname):
+                self.crmfile = self.fname
+            elif os.path.exists(self.fname + '.imh'):
+                self.crmfile = self.fname + '.imh'
+            else:
+                print(f"Can't find requested file {self.fname} or variants")
+
+        return self.crmfile
+
+    # Check if the file exists (Should work Otherwise Outta here)
+
+    def checkExist(self,fname,status):
+
+        """
+        Work in progress checkExist(self,filename,status)
+        checks to see if the given filename exists or not.
+        if status == r, must exist, otherwise it will print an error and return
+        False.
+        if status == w, if it exists then it prints an error and returns False
+        otherwise it deletes and returns True.
+        """
+
+        if (self.status == "r"):
+            # Checks to see if it exists for reading
+            # Which means it must  be present
+
+            if (not (os.path.exists(self.fname))):
+                print(f"Couldn't open input file: {self.fname}")
+                return False
+        else:
+            # Check to see if exists for reading
+            # (i.e. must not exist)
+            if (os.path.exists(self.fname)):
+                print(f"File {self.fname} already exists.")
+                return False
+
+        return True
 
 ###############################################################################
 #
@@ -268,7 +349,7 @@ def iraffiles(files, nfiles = 0):
             # Just plain filenames (?)
             if fitsfile(fcand)!="":
                 fout.append(fitsfile(fcand))
-
+    fout = issorted(fout)
     return fout
 
 ###############################################################################
