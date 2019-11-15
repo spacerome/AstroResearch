@@ -702,6 +702,8 @@ def main():
 
     # read initial image input files and will gather crms
 
+
+
     # store initial crvs within a list
 
     '''
@@ -801,6 +803,12 @@ def main():
         '''
 
     #################################
+
+    # FIND RAW CRM CRV ETC
+    # Make CRV
+    # Output file Clobber (Flag to overwrite)
+    # Clobber can be used to overwrite
+    # Write file
 
 
 ###############################################################################
