@@ -1,2 +1,2 @@
 # Astro Research
-Scripts generated for Astronomy Reserach
+Scripts generated for Astronomy Reserach WIP
