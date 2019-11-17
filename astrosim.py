@@ -79,6 +79,14 @@ keywords = {
 
 ###############################################################################
 #
+# Initialization of Lists
+#
+###############################################################################
+
+ffits = []
+
+###############################################################################
+#
 # Modifying This May Combine Later
 #
 ###############################################################################
@@ -87,7 +95,7 @@ def fitsfile(file):
 
     outfile =   ""
 
-    if file.endswith('.fits') or file.endswith('.imh'):
+    if file.endswith('.fits'):
         if os.path.exists(file):
             outfile =   file
         else:
@@ -97,8 +105,6 @@ def fitsfile(file):
             outfile =   file + '.fits'
         elif os.path.exists(file):
             outfile =   file
-        elif os.path.exists(file + '.imh'):
-            outfile =   file + '.imh'
         else:
             print(f"Can't find requested file {file} or variants.")
 
@@ -110,10 +116,10 @@ def fitsfile(file):
 #
 ###############################################################################
 
-def check_exist(filename, status, clobber = globclob):
+def check_exist(filename, status):
 
     """
-    check_exist(filename, status, clobber=yes)
+    check_exist(filename, status)
     checks to see if filename exists
     if status==r, must exist, otherwise prints error + returns False
     if status==w, if exists and clobber=no then prints error + returns False
@@ -130,10 +136,9 @@ def check_exist(filename, status, clobber = globclob):
         # check to see if it exists for writing
         # (i.e. must not exist or clobber=yes)
         if (os.path.exists(filename)):
-            if (clobber):
-                os.remove(filename)
+            if (status == "w"):
+                return True
             else:
-                print(f"File {filename} already exists and clobber = no")
                 return False
 
     return True
@@ -306,7 +311,6 @@ def shiftImage(input, output, shift, border = 0, crmkey = "CRM", crmnew = "",
         bpmkey  bad pixel mask header keyword [BPM]
         bpmnew  new bad pixel mask for shifted image [none]
 
-        clobber clobber output files [yes]
         verbose print messages about actions [yes]
 
     '''
@@ -321,7 +325,7 @@ def shiftImage(input, output, shift, border = 0, crmkey = "CRM", crmnew = "",
     if input == output:
         print("Unable to shift to same filename.")
         return None
-    check_exist(output, 'w', clobber)
+    check_exist(output, 'w')
 
     # Open the input image as objects
 
@@ -459,6 +463,14 @@ def main():
     fitsfile(listoffitsfiles)
 
     '''
+    fitsFile = glob.glob('*.fits')
+    
+    obs = glob.glob('*_obs.fits')
+    tru = glob.glob('*_tru.fits')
+    crm = glob.glob('*_crm.fits')
+    lac = glob.glob('*_lac.fits')
+
+
     ###########################################################################
 
     for i in range(noutput):
@@ -467,6 +479,7 @@ def main():
 
         n = randomImage(nfiles) # calls function to generate random value
         imageName = fitsImage[n] # Chooses name of fits Image
+
 
 
         # read in data, CRM
@@ -555,16 +568,16 @@ def main():
 #
 ###############################################################################
 
-def usage():
-
-    (xdir,xname)=os.path.split(sys.argv[0])
-
-    print(" Usage: %s [-n name] [-e epoch] <ra> <dec> [size]" % xname)
-    print("    <ra> and <dec> are sexagesimal hours/deg or decimal deg/deg")
-    print("    <size> is length of a side in arcmin (%s)" % def_radius)
-    print("    -n name gives the source name for output files (%s)" % \
-          def_source)
-    print("    -e epoch gives epoch, J2000 or B1950 (%s)" % def_epoch)
+# def usage():
+#
+#     (xdir,xname)=os.path.split(sys.argv[0])
+#
+#     print(" Usage: %s [-n name] [-e epoch] <ra> <dec> [size]" % xname)
+#     print("    <ra> and <dec> are sexagesimal hours/deg or decimal deg/deg")
+#     print("    <size> is length of a side in arcmin (%s)" % def_radius)
+#     print("    -n name gives the source name for output files (%s)" % \
+#           def_source)
+#     print("    -e epoch gives epoch, J2000 or B1950 (%s)" % def_epoch)
 
 if __name__=="__main__":
     main()
