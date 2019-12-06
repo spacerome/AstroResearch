@@ -507,8 +507,8 @@ def main():
         lacName = fileIndex + '_lac.fits'
         # read in data, CRM
 
-        crvFile = fits.open(crvName)
-        crvData = crvFile.data
+        crmFile = fits.open(crmName)
+        crmData = crmFile.data
 
 
         # calculate initial XFRAC
