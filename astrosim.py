@@ -19,17 +19,6 @@ import glob, argparse, random
 
 ###############################################################################
 
-
-
-###############################################################################
-
-#
-# fitsImage = glob.glob('NGC6652_0???.fits') #Change to other file names
-# fitsImage = sorted(fitsImage, key=lambda item: (int(item.partition(' ')[0])
-#                                     if item[0].isdigit()
-#                                     else float('inf'), item))
-#
-
 #####
 #Keywords
 #####
@@ -49,11 +38,6 @@ import glob, argparse, random
 # crmext = '_crm'
 # lacext = '_lac'
 # crvext = '_crv'
-
-# Initial Global Variables
-
-# globclob    =   yes
-# globver     =   yes
 
 ###############################################################################
 #
@@ -76,39 +60,6 @@ keywords = {
     'crvext'    :   '_crv'
 
 }
-
-###############################################################################
-#
-# Initialization of Lists
-#
-###############################################################################
-
-ffits = []
-
-###############################################################################
-#
-# Modifying This May Combine Later
-#
-###############################################################################
-
-def fitsfile(file):
-
-    outfile =   ""
-
-    if file.endswith('.fits'):
-        if os.path.exists(file):
-            outfile =   file
-        else:
-            print(f"Can't find requested file {file}")
-    else:
-        if os.path.exists(file + '.fits'):
-            outfile =   file + '.fits'
-        elif os.path.exists(file):
-            outfile =   file
-        else:
-            print(f"Can't find requested file {file} or variants.")
-
-    return outfile
 
 ###############################################################################
 #
@@ -152,68 +103,6 @@ def issorted(ims):
                                   else float('inf'), item))
 
     return fit
-
-###############################################################################
-#
-# Will be modified Just a Place Holder
-#
-###############################################################################
-
-def iraffiles(files, nfiles = 0):
-
-    if type(files) is not StringType:
-        print("Input filelist is not a string")
-        exit(1)
-
-    fout    =   []
-    fmult   =   files.split(",")
-    for fcand in fmult:
-        re1 = re.search("^(.+//)?@(.+)(//.+)?$",fcand)
-        re2 = re.search("[\*\?]",fcand)
-        if re1:
-            # Using the IRAF "@file.lis" convention
-            flist=re1.group(2)
-            if os.path.exists(flist):
-                fflist=getlines(flist)
-                for fmem in fflist:
-                    if re1.group(1):
-                        fmem=re1.group(1)[:-2]+fmem
-                    if re1.group(3):
-                        fmem=fmem+re1.group(3)[2:]
-                    if (fitsfile(fmem)!=""):
-                        fout.append(fitsfile(fmem))
-        elif re2:
-            # Using UNIX wildcards
-            flist=glob.glob(fcand)
-            for fmem in flist:
-                if (fitsfile(fmem)!=""):
-                    fout.append(fitsfile(fmem))
-        else:
-            # Just plain filenames (?)
-            if fitsfile(fcand)!="":
-                fout.append(fitsfile(fcand))
-    fout = issorted(fout)
-    return fout
-
-###############################################################################
-#
-# IRAFFILES 2.0
-#
-###############################################################################
-
-def sortfiles(files,nfiles=0):
-
-    #Try Except for this part
-
-    fout    =   []
-    fmult   =   files.split(",")
-
-    for fcand in fmult:
-        re1 = re.search("^(.+//)?@(,+)(//.+)?$",fcand)
-        re2 = re.search("[\*\?]",fcand)
-
-
-    return None
 
 ###############################################################################
 
