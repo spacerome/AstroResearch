@@ -456,20 +456,26 @@ def main():
 
     '''
 
-    crv=crmfiles
-    crm=crvfiles
+    crmv=crmfiles
+    crv=crvfiles
     MIGHT MAKE THIS EASIER TO PREVENT FURTHER CONFUSION
     Use resultant name say
     fitsfile(listoffitsfiles)
 
     '''
     fitsFile = glob.glob('*.fits')
-    
+
     obs = glob.glob('*_obs.fits')
     tru = glob.glob('*_tru.fits')
     crm = glob.glob('*_crm.fits')
     lac = glob.glob('*_lac.fits')
 
+    # Sort Images
+
+    obs = issorted(obs)
+    tru = issorted(tru)
+    crm = issorted(crm)
+    lac = issorted(lac)
 
     ###########################################################################
 
@@ -478,7 +484,7 @@ def main():
         # pick base image
 
         n = randomImage(nfiles) # calls function to generate random value
-        imageName = fitsImage[n] # Chooses name of fits Image
+        imageName = obs[n] # Chooses name of fits Image
 
 
 
