@@ -222,10 +222,10 @@ def openfits(fitsIm):
     # Open Given Fits File Assuming the calling function is calling the name
     # from list
 
-    try:
-        check_exist(fitsIm)
-    except:
-        pass # Will Change Later
+    # try:
+    #     check_exist(fitsIm)
+    # except:
+    #     pass # Will Change Later
 
     fitsIm = fits.open(fitsName)
 
@@ -267,8 +267,20 @@ def randomImage(noutput):
 #
 ###############################################################################
 
-def crm2crv():
-
+def crm2crv(fileName):
+    fileIndex = fileName.strip('_obs.fits')
+    crmIndex = fileIndex + '_crm.fits'
+    crvIndex = fileIndex + '_crv.fits'
+    truIndex = fileIndex + '_tru.fits'
+    lacIndex = fileIndex + '_lac.fits'
+    obsFile = fits.open(fileName)
+    crmFile = fits.open(crmIndex)
+    truFile = fits.open(truIndex)
+    obsData = obsFile.data
+    crmData = crmFile.data
+    truData = truFile.data
+    crayVal = obsData - truData
+    crvData = numpy.where(crmData ==1)
     # RAW - SKY (Gets Cray Values)
     # Np Where cdata1 = 1 (Cray)
     # if np where = 1 then we input the cray value
@@ -444,8 +456,6 @@ def main():
 
     # read initial image input files and will gather crms
 
-
-
     # store initial crvs within a list
 
     '''
@@ -477,6 +487,9 @@ def main():
     crm = issorted(crm)
     lac = issorted(lac)
 
+    # Makes crvfiles
+    for i in range(len(obs)):
+        crm2crv(obs)
     ###########################################################################
 
     for i in range(noutput):
@@ -486,15 +499,16 @@ def main():
         n = randomImage(nfiles) # calls function to generate random value
         imageName = obs[n] # Chooses name of fits Image
 
-
-
+        # Indexing
+        fIndex = imageName.strip('_obs.fits')
+        crmName = fileIndex + '_crm.fits'
+        crvName = fileIndex + '_crv.fits'
+        truName = fileIndex + '_tru.fits'
+        lacName = fileIndex + '_lac.fits'
         # read in data, CRM
 
-        '''
-
-        call function that converts crm
-
-        '''
+        crvFile = fits.open(crvName)
+        crvData = crvFile.data
 
 
         # calculate initial XFRAC
@@ -534,12 +548,7 @@ def main():
 
         # define name for the output file
 
-        '''
-
-        use following class to output fitsfile to reduce excess data
-        loss using FitsFileImages() class for this process
-
-        '''
+        # obsnew = ''
 
         # write the output image file
 
